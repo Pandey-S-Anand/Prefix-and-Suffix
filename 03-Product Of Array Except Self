@@ -1,0 +1,112 @@
+//Bruteforce Approach
+
+class Solution {
+    public int[] productExceptSelf(int[] arr) {
+        int countZeroes = 0, productWithoutZero = 1, zeroIndex = -1;
+        int[] productExceptSelf = new int[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != 0) {
+                productWithoutZero *= arr[i];
+            } else {
+                countZeroes++;
+                zeroIndex = i;
+                if (countZeroes > 1) {
+                    return productExceptSelf;
+                }
+            }
+        }
+
+        if (countZeroes == 1) {
+            productExceptSelf[zeroIndex] = productWithoutZero;
+            return productExceptSelf;
+        }
+        // countZeroes == 0
+        for (int i = 0; i < arr.length; i++) {
+            productExceptSelf[i] = productWithoutZero / arr[i];
+        }
+
+        return productExceptSelf;
+    }
+}
+
+
+
+
+//Better Approach
+
+//Intuitive Implementation
+
+class Solution {
+    public int[] productExceptSelf(int[] arr) {
+        int[] prefixProduct = new int[arr.length];
+        int[] suffixProduct = new int[arr.length];
+        int[] productExceptSelf = new int[arr.length];
+
+        prefixProduct[0] = 1;
+        for (int i = 1; i < arr.length; i++) {
+            prefixProduct[i] = prefixProduct[i - 1] * arr[i - 1];
+        }
+
+        suffixProduct[arr.length - 1] = 1;
+        for (int i = arr.length - 2; i >= 0; i--) {
+            suffixProduct[i] = suffixProduct[i + 1] * arr[i + 1];
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            productExceptSelf[i] = prefixProduct[i] * suffixProduct[i];
+        }
+
+        return productExceptSelf;
+    }
+}
+
+
+//Optimal Implementation
+
+class Solution {
+    public int[] productExceptSelf(int[] arr) {
+        int[] prefixProduct = new int[arr.length];
+        int[] suffixProduct = new int[arr.length];
+        int[] productExceptSelf = new int[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                prefixProduct[i] = 1;
+                suffixProduct[arr.length - 1 - i] = 1;
+            } else {
+                prefixProduct[i] = prefixProduct[i - 1] * arr[i - 1];
+                suffixProduct[arr.length - 1 - i] = suffixProduct[arr.length - i] * arr[arr.length - i];
+            }
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            productExceptSelf[i] = prefixProduct[i] * suffixProduct[i];
+        }
+
+        return productExceptSelf;
+    }
+}
+
+
+//Optimal Approach
+
+class Solution {
+    public int[] productExceptSelf(int[] arr) {
+        int[] prefixProduct = new int[arr.length];
+        int[] productExceptSelf = new int[arr.length];
+
+        prefixProduct[0] = 1;
+        for (int i = 1; i < arr.length; i++) {
+            prefixProduct[i] = prefixProduct[i - 1] * arr[i - 1];
+        }
+
+        int suffixProduct = 1;
+        for (int i = arr.length - 1; i >= 0; i--) {
+            productExceptSelf[i] = prefixProduct[i] * suffixProduct;
+            suffixProduct *= arr[i];
+        }
+
+        return productExceptSelf;
+    }
+}
