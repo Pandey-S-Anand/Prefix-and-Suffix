@@ -1,0 +1,154 @@
+//Bruteforce Approach
+
+class Solution {
+    public static int equilibriumPoint(int arr[]) {
+        int leftSum, rightSum;
+
+        for (int i = 0; i < arr.length; i++) {
+            leftSum = 0;
+            // Calculate left sum for the current element
+            for (int j = 0; j < i; j++) {
+                leftSum += arr[j];
+            }
+
+            rightSum = 0;
+            // Calculate right sum for the current element
+            for (int k = (i + 1); k < arr.length; k++) {
+                rightSum += arr[k];
+            }
+
+            // If left and right sum are equal, we found the equilibrium point
+            if (leftSum == rightSum) {
+                return i + 1; // Position=index+1
+            }
+        }
+
+        return -1; // If no equilibrium point is found, return -1
+    }
+}
+
+
+
+//Improved Approach
+
+class Solution {
+    public static int equilibriumPoint(int arr[]) {
+        long[] prefixSum = new long[arr.length];
+        long[] postfixSum = new long[arr.length];
+
+        // Fill prefixSum array with cumulative sums from left to right
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                prefixSum[i] = arr[i];
+            } else {
+                prefixSum[i] = arr[i] + prefixSum[i - 1];
+            }
+        }
+
+        // Fill postfixSum array with cumulative sums from right to left
+        for (int i = arr.length - 1; i >= 0; i--) {
+            if (i == (arr.length - 1)) {
+                postfixSum[i] = arr[i];
+            } else {
+                postfixSum[i] = arr[i] + postfixSum[i + 1];
+            }
+        }
+
+        // Check if any element is an equilibrium point by comparing left and right sums
+        for (int i = 0; i < arr.length; i++) {
+            if ((prefixSum[i] - arr[i]) == (postfixSum[i] - arr[i])) {
+                return i + 1; // Position=index+1
+            }
+        }
+
+        return -1; // If no equilibrium point is found, return -1
+    }
+}
+
+
+
+//Good Approach
+
+class Solution {
+    public static int equilibriumPoint(int arr[]) {
+        int[] prefixSum = new int[arr.length];
+        int[] postfixSum = new int[arr.length];
+
+        // Fill prefixSum and postfixSum arrays in one pass
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                prefixSum[i] = arr[i];
+                postfixSum[arr.length - 1 - i] = arr[arr.length - 1 - i];
+            } else {
+                prefixSum[i] = arr[i] + prefixSum[i - 1];
+                postfixSum[arr.length - 1 - i] = arr[arr.length - 1 - i] + postfixSum[arr.length - i];
+            }
+        }
+
+        // Check if any element is an equilibrium point by comparing left and right sums
+        for (int i = 0; i < arr.length; i++) {
+            if ((prefixSum[i] - arr[i]) == (postfixSum[i] - arr[i])) {
+                return i + 1; // Position=index+1
+            }
+        }
+
+        return -1; // If no equilibrium point is found, return -1
+    }
+}
+
+
+//Better Approach
+
+class Solution {
+    public static int equilibriumPoint(int arr[]) {
+        int[] prefixSum = new int[arr.length];
+        int arrSum = 0;
+
+        // Calculate prefixSum and total sum of the array in a single pass
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                prefixSum[i] = arr[i];
+            } else {
+                prefixSum[i] = arr[i] + prefixSum[i - 1];
+            }
+            arrSum += arr[i];
+        }
+
+        // Check if any element is an equilibrium point by comparing left and right sums
+        for (int i = 0; i < arr.length; i++) {
+            if ((prefixSum[i] - arr[i]) == (arrSum - prefixSum[i])) {
+                return i + 1; // Position=index+1
+            }
+        }
+
+        return -1; // If no equilibrium point is found, return -1
+    }
+}
+
+
+//Optimal Approach
+
+class Solution {
+    public static int equilibriumPoint(int arr[]) {
+        int arrSum = 0, leftSum = 0;
+
+        // Calculate total sum of the array
+        for (int num : arr) {
+            arrSum += num;
+        }
+
+        // Traverse the array and maintain the left sum and right sum (calculated dynamically)
+        for (int i = 0; i < arr.length; i++) {
+            arrSum = arrSum - arr[i]; // Subtract current element from total sum to get right sum
+
+            // Check if left sum equals right sum
+            if (leftSum == arrSum) {
+                return i + 1; // Position=index+1
+            }
+
+            leftSum += arr[i]; // Update left sum for the next iteration
+        }
+
+        return -1; // If no equilibrium point is found, return -1
+    }
+}
